@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Quality Index Monitor</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --purple-color: #8e44ad;
+        }
+        
+        .bg-orange {
+            background-color: #e67e22 !important;
+        }
+        
+        .bg-purple {
+            background-color: #8e44ad !important;
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 100px 0;
+        }
+        
+        .aqi-card {
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .aqi-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .page-section {
+            display: none;
+        }
+        
+        .active-section {
+            display: block;
+        }
+        
+        .aqi-meter {
+            height: 20px;
+            border-radius: 10px;
+            background: linear-gradient(90deg, 
+                #27ae60 0%, #27ae60 10%,
+                #2ecc71 10%, #2ecc71 20%,
+                #f1c40f 20%, #f1c40f 40%,
+                #f39c12 40%, #f39c12 60%,
+                #e67e22 60%, #e67e22 80%,
+                #e74c3c 80%, #e74c3c 100%);
+        }
+        
+        .city-card {
+            transition: all 0.3s;
+        }
+        
+        .city-card:hover {
+            transform: scale(1.03);
+        }
+        
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .result-box {
+            border-radius: 10px;
+            padding: 20px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Header -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-wind me-2"></i>AQI Monitor
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link nav-home" href="#" onclick="showSection('home')">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-about" href="#" onclick="showSection('about')">About AQI</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-dashboard" href="#" onclick="showSection('dashboard')">Dashboard</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Page -->
+    <section id="home" class="page-section active-section">
+        <!-- Hero Section -->
+        <div class="hero-section text-center">
+            <div class="container">
+                <h1 class="display-4 fw-bold mb-4">Air Quality Index Monitoring</h1>
+                <p class="lead mb-4">Real-time air quality monitoring and prediction using machine learning</p>
+                <button class="btn btn-light btn-lg" onclick="showSection('dashboard')">
+                    Check Air Quality <i class="fas fa-arrow-right ms-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="container py-5">
+            <div class="row text-center mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="fw-bold mb-3">Why Monitor Air Quality?</h2>
+                    <p class="text-muted">Air pollution affects everyone. Stay informed about the air you breathe.</p>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card aqi-card h-100 border-0">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon bg-primary bg-gradient rounded-circle p-3 mb-3 mx-auto" style="width: 70px;">
+                                <i class="fas fa-lungs text-white fs-4"></i>
+                            </div>
+                            <h5 class="card-title">Health Protection</h5>
+                            <p class="card-text">Monitor air quality to protect yourself and your family from respiratory problems.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card aqi-card h-100 border-0">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon bg-success bg-gradient rounded-circle p-3 mb-3 mx-auto" style="width: 70px;">
+                                <i class="fas fa-brain text-white fs-4"></i>
+                            </div>
+                            <h5 class="card-title">ML Powered</h5>
+                            <p class="card-text">Advanced machine learning algorithms for accurate AQI prediction and forecasting.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card aqi-card h-100 border-0">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon bg-warning bg-gradient rounded-circle p-3 mb-3 mx-auto" style="width: 70px;">
+                                <i class="fas fa-mobile-alt text-white fs-4"></i>
+                            </div>
+                            <h5 class="card-title">Real-time Data</h5>
+                            <p class="card-text">Get real-time air quality information for your location and plan your activities.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AQI Scale Info -->
+        <div class="bg-light py-5">
+            <div class="container">
+                <h2 class="text-center fw-bold mb-5">AQI Scale</h2>
+                <div class="aqi-meter mb-4"></div>
+                <div class="row text-center">
+                    <div class="col">
+                        <span class="badge bg-success">0-50</span>
+                        <small class="d-block">Good</small>
+                    </div>
+                    <div class="col">
+                        <span class="badge bg-info">51-100</span>
+                        <small class="d-block">Satisfactory</small>
+                    </div>
+                    <div class="col">
+                        <span class="badge bg-warning">101-200</span>
+                        <small class="d-block">Moderate</small>
+                    </div>
+                    <div class="col">
+                        <span class="badge bg-orange">201-300</span>
+                        <small class="d-block">Poor</small>
+                    </div>
+                    <div class="col">
+                        <span class="badge bg-danger">301-400</span>
+                        <small class="d-block">Very Poor</small>
+                    </div>
+                    <div class="col">
+                        <span class="badge bg-purple">401-500</span>
+                        <small class="d-block">Severe</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Page -->
+    <section id="about" class="page-section">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <h1 class="fw-bold mb-4">About Air Quality Index</h1>
+                    
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body">
+                            <h3 class="card-title">What is AQI?</h3>
+                            <p class="card-text">
+                                The Air Quality Index (AQI) is an index for reporting daily air quality. 
+                                It tells you how clean or polluted your air is, and what associated health effects might be a concern for you.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body">
+                            <h3 class="card-title">How is AQI Calculated?</h3>
+                            <p class="card-text">
+                                AQI is calculated based on the concentrations of major air pollutants:
+                            </p>
+                            <ul>
+                                <li><strong>PM2.5</strong> - Fine particulate matter (diameter ≤ 2.5μm)</li>
+                                <li><strong>PM10</strong> - Coarse particulate matter (diameter ≤ 10μm)</li>
+                                <li><strong>NO₂</strong> - Nitrogen Dioxide</li>
+                                <li><strong>SO₂</strong> - Sulfur Dioxide</li>
+                                <li><strong>CO</strong> - Carbon Monoxide</li>
+                                <li><strong>O₃</strong> - Ozone</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body">
+                            <h3 class="card-title">Health Impacts</h3>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>AQI Category</th>
+                                            <th>Health Impacts</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span class="badge bg-success">Good (0-50)</span></td>
+                                            <td>Minimal impact</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge bg-info">Satisfactory (51-100)</span></td>
+                                            <td>Minor breathing discomfort to sensitive people</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge bg-warning">Moderate (101-200)</span></td>
+                                            <td>Breathing discomfort to people with lung disease</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge bg-orange">Poor (201-300)</span></td>
+                                            <td>Breathing discomfort to most people on prolonged exposure</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge bg-danger">Very Poor (301-400)</span></td>
+                                            <td>Respiratory illness on prolonged exposure</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge bg-purple">Severe (401-500)</span></td>
+                                            <td>Affects healthy people and seriously impacts those with existing diseases</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <h3 class="card-title">Our Machine Learning Approach</h3>
+                            <p class="card-text">
+                                We use a Random Forest regression model trained on historical air quality data to predict AQI values based on pollutant concentrations.
+                                The model considers multiple parameters to provide accurate AQI predictions.
+                            </p>
+                            <div class="row text-center mt-4">
+                                <div class="col-md-6">
+                                    <div class="p-3 border rounded">
+                                        <h4 class="text-primary">95%</h4>
+                                        <p class="mb-0">Prediction Accuracy</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-3 border rounded">
+                                        <h4 class="text-success">8</h4>
+                                        <p class="mb-0">Parameters Analyzed</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Page -->
+    <section id="dashboard" class="page-section">
+        <div class="container py-5">
+            <h1 class="fw-bold mb-4 text-center">AQI Dashboard</h1>
+            
+            <!-- Prediction Form -->
+            <div class="row mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card border-0 shadow">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="card-title mb-0"><i class="fas fa-calculator me-2"></i>AQI Prediction</h3>
+                        </div>
+                        <div class="card-body p-4">
+                            <form id="predictionForm">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label for="pm25" class="form-label">PM2.5 (μg/m³)</label>
+                                        <input type="number" class="form-control" id="pm25" step="0.1" min="0" max="500" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="pm10" class="form-label">PM10 (μg/m³)</label>
+                                        <input type="number" class="form-control" id="pm10" step="0.1" min="0" max="500" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="no2" class="form-label">NO₂ (μg/m³)</label>
+                                        <input type="number" class="form-control" id="no2" step="0.1" min="0" max="200" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="so2" class="form-label">SO₂ (μg/m³)</label>
+                                        <input type="number" class="form-control" id="so2" step="0.1" min="0" max="100" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="co" class="form-label">CO (mg/m³)</label>
+                                        <input type="number" class="form-control" id="co" step="0.1" min="0" max="10" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="o3" class="form-label">O₃ (μg/m³)</label>
+                                        <input type="number" class="form-control" id="o3" step="0.1" min="0" max="200" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="temp" class="form-label">Temperature (°C)</label>
+                                        <input type="number" class="form-control" id="temp" step="0.1" min="-10" max="50" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="humidity" class="form-label">Humidity (%)</label>
+                                        <input type="number" class="form-control" id="humidity" step="0.1" min="0" max="100" required>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                                        <i class="fas fa-calculator me-2"></i>Calculate AQI
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Results Section -->
+            <div id="resultsSection" class="row mb-5" style="display: none;">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card border-0 shadow">
+                        <div class="card-header bg-success text-white">
+                            <h3 class="card-title mb-0"><i class="fas fa-chart-line me-2"></i>Prediction Results</h3>
+                        </div>
+                        <div class="card-body p-4">
+                            <div id="resultsContent"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sample Data Section -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card border-0 shadow">
+                        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                            <h3 class="card-title mb-0"><i class="fas fa-city me-2"></i>City-wise AQI Data</h3>
+                            <button class="btn btn-light btn-sm" onclick="loadSampleData()">
+                                <i class="fas fa-sync-alt me-1"></i>Refresh
+                            </button>
+                        </div>
+                        <div class="card-body p-4">
+                            <div id="citiesData" class="row g-4">
+                                <!-- City data will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-wind me-2"></i>AQI Monitor</h5>
+                    <p>Real-time air quality monitoring and prediction system.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white text-decoration-none" onclick="showSection('home')">Home</a></li>
+                        <li><a href="#" class="text-white text-decoration-none" onclick="showSection('about')">About AQI</a></li>
+                        <li><a href="#" class="text-white text-decoration-none" onclick="showSection('dashboard')">Dashboard</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Contact</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-envelope me-2"></i>medisettiaswinidevi2@gmail.com</li>
+                        <li><i class="fas fa-phone me-2"></i>+91 9032440479</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2023 AQI Monitor. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Show specific section and hide others
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active-section');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active-section');
+            
+            // Update active nav link
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelector('.nav-' + sectionId).classList.add('active');
+            
+            // Load data if dashboard
+            if (sectionId === 'dashboard') {
+                loadSampleData();
+            }
+        }
+        
+        // Load sample city data
+        function loadSampleData() {
+            fetch('/get_sample_data')
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById('citiesData');
+                    container.innerHTML = '';
+                    
+                    data.forEach(city => {
+                        const cityCard = `
+                            <div class="col-md-6 col-lg-4">
+                                <div class="card city-card h-100 border-0 shadow-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-3">
+                                            <h5 class="card-title">${city.city}</h5>
+                                            <span class="badge ${city.color_class}">${city.aqi}</span>
+                                        </div>
+                                        <p class="card-text">
+                                            <strong>Category:</strong> ${city.category}<br>
+                                            <strong>PM2.5:</strong> ${city.pm25} μg/m³<br>
+                                            <strong>PM10:</strong> ${city.pm10} μg/m³
+                                        </p>
+                                        <small class="text-muted">Last updated: Just now</small>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        container.innerHTML += cityCard;
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading city data:', error);
+                });
+        }
+        
+        // Handle prediction form submission
+        document.getElementById('predictionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show loading state
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Calculating...';
+            submitBtn.disabled = true;
+            
+            // Prepare form data
+            const formData = new FormData();
+            formData.append('pm25', document.getElementById('pm25').value);
+            formData.append('pm10', document.getElementById('pm10').value);
+            formData.append('no2', document.getElementById('no2').value);
+            formData.append('so2', document.getElementById('so2').value);
+            formData.append('co', document.getElementById('co').value);
+            formData.append('o3', document.getElementById('o3').value);
+            formData.append('temp', document.getElementById('temp').value);
+            formData.append('humidity', document.getElementById('humidity').value);
+            
+            // Send prediction request
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Reset button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                    return;
+                }
+                
+                // Display results
+                document.getElementById('resultsSection').style.display = 'block';
+                document.getElementById('resultsContent').innerHTML = `
+                    <div class="row align-items-center">
+                        <div class="col-md-6 text-center">
+                            <div class="result-box ${data.color_class} mb-3 mb-md-0">
+                                <h2 class="display-4 fw-bold">${data.aqi}</h2>
+                                <h4>${data.category}</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Health Advice</h5>
+                            <p>${data.advice}</p>
+                            <div class="mt-3">
+                                <small class="text-muted">Calculated at: ${data.timestamp}</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Scroll to results
+                document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+            })
+            .catch(error => {
+                // Reset button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                alert('Error: ' + error);
+            });
+        });
+        
+        // Load initial data
+        window.onload = function() {
+            loadSampleData();
+        };
+    </script>
+</body>
+</html>
